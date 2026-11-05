@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Admin sign-in{% endblock %}
+{% block content %}
+<h1>Admin sign-in</h1>
+<form method="post" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div><label for="token">Admin token</label><input id="token" name="token" type="password" required autocomplete="current-password"></div>
+  <button type="submit">Sign in</button>
+</form>
+<p class="small">The token is set in the <code>ADMIN_TOKEN</code> environment variable (see README).</p>
+{% endblock %}

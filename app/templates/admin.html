@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "_health.html" import pill %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<h1>Admin</h1>
+{% if generated %}<p class="flash error">No ADMIN_TOKEN is configured: a temporary token was printed in the server console. Set ADMIN_TOKEN in .env for real use.</p>{% endif %}
+<section class="panel">
+  <h2>Refresh now</h2>
+  <form method="post" action="{{ url_for('web.admin_refresh') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit">Refresh all enabled sources</button>
+  </form>
+  <ul>{% for s in sources %}<li>{{ pill(s.health) }} {{ s.row.name }} <span class="small">- {{ s.health.text }}</span></li>{% endfor %}</ul>
+</section>
+<section class="panel">
+  <h2>Add real notices from the official website</h2>
+  <p>The official site does not allow automatic downloads, so you copy a notice yourself (this is normal use of a public page):</p>
+  <ol>
+    <li>Open the <a href="https://sr.indianrailways.gov.in/view_section.jsp?fontColor=black&amp;backgroundColor=LIGHTSTEELBLUE&amp;lang=0&amp;id=0%2C4%2C268" target="_blank" rel="noopener">official Southern Railway press-release page</a>, choose <strong>Chennai</strong> under "Press Release - Divisions", and click a notice such as "Changes in the pattern of Train Services".</li>
+    <li>Select all the notice text (<kbd>Ctrl</kbd>+<kbd>A</kbd>), copy it (<kbd>Ctrl</kbd>+<kbd>C</kbd>) and paste it into the box below. Paste the notice's web address in the first box.</li>
+  </ol>
+  <form method="post" action="{{ url_for('web.admin_import_text') }}" class="stack">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div><label for="imp-url">Web address of the notice (optional, shown as the official source link)</label><input id="imp-url" name="url" placeholder="https://sr.indianrailways.gov.in/view_detail.jsp?..."></div>
+    <div><label for="imp-text">Notice text</label><textarea id="imp-text" name="text" rows="9" required placeholder="Paste the full notice text here"></textarea></div>
+    <button type="submit">Import this notice</button>
+  </form>
+  <h3>Or upload a saved PDF</h3>
+  <form method="post" action="{{ url_for('web.admin_import') }}" enctype="multipart/form-data" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="file" name="file" accept=".pdf,.txt" required aria-label="Press release PDF">
+    <button type="submit">Upload</button>
+  </form>
+  <p class="small">Importing the same notice twice does nothing. A revised notice with the same number updates the existing one and keeps its history.</p>
+</section>
+{% if scenarios %}
+<section class="panel">
+  <h2>Demo source scenario (mentor challenges)</h2>
+  <p>The built-in simulated agency website currently serves: <strong>{{ scenario }}</strong>. Switch it, then press <em>Refresh</em>.</p>
+  <form method="post" action="{{ url_for('web.admin_demo_scenario') }}" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for sc in scenarios %}<button type="submit" name="scenario" value="{{ sc }}" {{ 'disabled' if sc==scenario }}>{{ sc }}</button>{% endfor %}
+  </form>
+  <p class="small"><strong>baseline</strong> initial notices &middot; <strong>update</strong> outage +24 h, new advisory without end date, one cancelled, one removed &middot; <strong>malformed</strong> broken markup &middot; <strong>failure</strong> source returns HTTP 503.</p>
+</section>
+{% endif %}
+<section class="panel">
+  <h2>Alert delivery log ({{ subs }} active subscribers)</h2>
+  <table class="data small"><thead><tr><th scope="col">#</th><th scope="col">Notice</th><th scope="col">Rev</th><th scope="col">To</th><th scope="col">Status</th><th scope="col">Tries</th><th scope="col">When</th></tr></thead>
+  <tbody>{% for a in alerts %}<tr><td>{{ a.alert_id }}</td><td>{{ a.title }}</td><td>{{ a.revision_id }}</td><td>{{ a.contact }}</td><td>{{ a.alert_status }}{% if a.error %}<br>{{ a.error }}{% endif %}</td><td>{{ a.attempts }}</td><td>{{ a.alerted_at|local }}</td></tr>
+  {% else %}<tr><td colspan="7">No alerts yet.</td></tr>{% endfor %}</tbody></table>
+</section>
+<section class="panel">
+  <h2>Recent refresh runs</h2>
+  <table class="data small"><thead><tr><th scope="col">When</th><th scope="col">Source</th><th scope="col">Outcome</th><th scope="col">Found</th><th scope="col">New</th><th scope="col">Rev</th><th scope="col">Wd</th><th scope="col">Rej</th><th scope="col">Dup</th></tr></thead>
+  <tbody>{% for l in logs %}<tr><td>{{ l.finished_at|local }}</td><td>{{ l.source_id }}</td><td>{{ l.outcome }}{% if l.error %}<br>{{ l.error }}{% endif %}</td><td>{{ l.found }}</td><td>{{ l.new_count }}</td><td>{{ l.revised }}</td><td>{{ l.withdrawn }}</td><td>{{ l.rejected }}</td><td>{{ l.duplicates }}</td></tr>{% endfor %}</tbody></table>
+</section>
+<form method="post" action="{{ url_for('web.admin_logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="secondary">Sign out</button></form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}About &amp; limitations{% endblock %}
+{% block content %}
+<h1>About TransitNotice &amp; its limits</h1>
+<h2>Who is it for?</h2>
+<ul>
+  <li><strong>Daily commuter (e.g. a college student on bus routes 12B / 21G):</strong> wants to know before leaving home whether a diversion or outage affects the route, and for how long.</li>
+  <li><strong>Wheelchair-using metro rider / caregiver:</strong> needs advance notice of station or stop closures and shuttle arrangements to plan an accessible journey.</li>
+  <li><strong>Community help-desk volunteer:</strong> answers passengers' questions and needs one searchable page with the official source and the last verified time.</li>
+</ul>
+<h2>What it does</h2>
+<p>It reads only <strong>public</strong> advisories from sources that permit automated access (robots.txt, terms and rate limits respected), extracts affected routes, validity window and change type, and keeps a history of every revision.</p>
+<h2>Limitations - please read</h2>
+<ul>
+  <li><strong>It is scheduled monitoring, not real time.</strong> A notice can be published minutes before our next check.</li>
+  <li>If the agency does not publish a notice online, or publishes it only as an image/PDF or on social media, we will not see it.</li>
+  <li>Parsing depends on the page layout; if the layout changes, extraction may fail. When that happens the app shows a source error rather than pretending data is live.</li>
+  <li>An advisory with no announced end time is shown as <em>active, end not announced</em>; it can end at any time.</li>
+  <li>Alerts are best-effort. Never rely on TransitNotice alone for safety-critical or time-critical decisions.</li>
+</ul>
+{% endblock %}

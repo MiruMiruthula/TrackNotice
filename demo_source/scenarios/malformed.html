@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><title>Advisories (broken markup on purpose)</title></head>
+<body>
+<div class="advisory" data-ref="BAD-1">
+  <span class="adv-title">Valid advisory with sloppy markup
+  <span class="adv-routes">12B
+  <span class="adv-from">{{d:0@06:00}}
+  <span class="adv-to">{{d:+1@06:00}}
+  <p class="adv-text">This card has unclosed tags but all fields exist.
+</div>
+<div class="advisory" data-ref="BAD-2">
+  <span class="adv-title">Missing routes entirely</span>
+  <span class="adv-from">{{d:0@06:00}}</span>
+  <p class="adv-text">No route code - must be rejected, not crash.</p>
+</div>
+<div class="advisory" data-ref="BAD-3">
+  <span class="adv-title">Unreadable start date</span>
+  <span class="adv-routes">21G</span>
+  <span class="adv-from">sometime next week maybe</span>
+  <p class="adv-text">Bad date - must be rejected with a reason.</p>
+</div>
+<div class="advisory" data-ref="BAD-4">
+  <span class="adv-title">End before start</span>
+  <span class="adv-routes">5C</span>
+  <span class="adv-from">{{d:+2@06:00}}</span><span class="adv-to">{{d:+1@06:00}}</span>
+  <p class="adv-text">Inverted window - must be rejected.</p>
+</div>

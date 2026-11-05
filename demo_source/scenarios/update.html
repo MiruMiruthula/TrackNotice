@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Demo Metropolitan Transit - Service Advisories</title></head>
+<body>
+<h1>Service Advisories</h1>
+<p>Official notices from Demo Metropolitan Transit Corporation (simulation for TransitNotice).</p>
+
+<section id="featured">
+  <article class="advisory" data-ref="ADV-1001">
+    <h3 class="adv-title">Route diversion near T. Nagar for road works</h3>
+    <span class="adv-type">Diversion</span>
+    <span class="adv-routes">12B, 21G, 29C</span>
+    <span class="adv-area">T. Nagar</span>
+    <span class="adv-stations">Panagal Park, Usman Road, Pondy Bazaar</span>
+    <span class="adv-published">{{h:-30}}</span>
+    <span class="adv-from">{{d:-1@06:00}}</span>
+    <span class="adv-to">{{d:+2@22:00}}</span>
+    <p class="adv-text">Buses on these routes will be diverted via South Usman Road, Habibullah Road and Nageswaran Road. Stops at Panagal Park and Pondy Bazaar are not served.</p>
+    <a class="adv-link" href="/demo-source/advisories#ADV-1001">Read official notice</a>
+  </article>
+</section>
+
+<section id="all">
+  <!-- ADV-1001 deliberately appears a second time (featured + full list): the parser must de-duplicate it -->
+  <article class="advisory" data-ref="ADV-1001">
+    <h3 class="adv-title">Route diversion near T. Nagar for road works</h3>
+    <span class="adv-type">Diversion</span>
+    <span class="adv-routes">12B, 21G, 29C</span>
+    <span class="adv-area">T. Nagar</span>
+    <span class="adv-stations">Panagal Park, Usman Road, Pondy Bazaar</span>
+    <span class="adv-published">{{h:-30}}</span>
+    <span class="adv-from">{{d:-1@06:00}}</span>
+    <span class="adv-to">{{d:+2@22:00}}</span>
+    <p class="adv-text">Buses on these routes will be diverted via South Usman Road, Habibullah Road and Nageswaran Road. Stops at Panagal Park and Pondy Bazaar are not served.</p>
+    <a class="adv-link" href="/demo-source/advisories#ADV-1001">Read official notice</a>
+  </article>
+
+  <article class="advisory" data-ref="ADV-1002">
+    <h3 class="adv-title">Blue Line service interruption between Airport and Guindy</h3>
+    <span class="adv-type">Service interruption</span>
+    <span class="adv-routes">Blue Line</span>
+    <span class="adv-area">Guindy</span>
+    <span class="adv-stations">Airport, Meenambakkam, Guindy</span>
+    <span class="adv-published">{{h:-3}}</span>
+    <span class="adv-from">{{h:-3}}</span>
+    <span class="adv-to">{{h:+29}}</span>
+    <p class="adv-text">Trains are not running between Airport and Guindy due to a power supply fault. Free shuttle buses are provided between the two stations.</p>
+    <a class="adv-link" href="/demo-source/advisories#ADV-1002">Read official notice</a>
+  </article>
+
+  <article class="advisory" data-ref="ADV-1003">
+    <h3 class="adv-title">Night maintenance: Route 5C short-turned at Adyar</h3>
+    <span class="adv-type">Planned maintenance</span>
+    <span class="adv-routes">5C</span>
+    <span class="adv-area">Adyar</span>
+    <span class="adv-status">Cancelled</span>
+    <span class="adv-stations">Adyar Depot, Besant Nagar</span>
+    <span class="adv-published">{{h:-20}}</span>
+    <span class="adv-from">{{iso:+2@22:00}}</span>
+    <span class="adv-to">{{iso:+3@05:00}}</span>
+    <p class="adv-text">Overnight track and road maintenance. Route 5C will terminate at Adyar Depot between 10 PM and 5 AM.</p>
+    <a class="adv-link" href="/demo-source/advisories#ADV-1003">Read official notice</a>
+  </article>
+
+  <article class="advisory" data-ref="ADV-1004">
+    <h3 class="adv-title">Egmore bus stop closed for platform repair</h3>
+    <span class="adv-type">Stop closure</span>
+    <span class="adv-routes">27B / 40</span>
+    <span class="adv-area">Egmore</span>
+    <span class="adv-stations">Egmore</span>
+    <span class="adv-published">{{d:-4@09:00}}</span>
+    <span class="adv-from">{{d:-3@06:00}}</span>
+    <span class="adv-to">{{d:-1@23:00}}</span>
+    <p class="adv-text">The Egmore stop was closed for platform repair. Passengers used the temporary stop opposite the railway station. (Already ended - kept for the archive.)</p>
+    <a class="adv-link" href="/demo-source/advisories#ADV-1004">Read official notice</a>
+  </article>
+
+  <article class="advisory" data-ref="ADV-1006">
+    <h3 class="adv-title">Waterlogging: Route 47D services disrupted at Velachery</h3>
+    <span class="adv-type">Service disruption</span>
+    <span class="adv-routes">47D</span>
+    <span class="adv-area">Velachery</span>
+    <span class="adv-stations">Velachery, Taramani</span>
+    <span class="adv-published">{{h:-1}}</span>
+    <span class="adv-from">{{h:-1}}</span>
+    <span class="adv-to"></span>
+    <p class="adv-text">Heavy waterlogging near Velachery. Services are disrupted until further notice; the end time has not been announced.</p>
+    <a class="adv-link" href="/demo-source/advisories#ADV-1006">Read official notice</a>
+  </article>
+</section>
+</body></html>

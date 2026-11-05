@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Unsubscribe{% endblock %}
+{% block content %}
+<h1>{{ 'You are subscribed' if created else 'Unsubscribe' }}</h1>
+<p>Subscription for <strong>{{ sub.contact }}</strong>. Keep this page's link: it is your private unsubscribe link.</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Unsubscribe</button></form>
+{% endblock %}

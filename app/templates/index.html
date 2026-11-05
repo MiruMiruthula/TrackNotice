@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% from "_health.html" import pill %}
+{% block title %}Live service advisories{% endblock %}
+{% block hero %}
+<section class="hero">
+  <div class="wrap hero-in">
+    <div class="hero-text">
+      <p class="eyebrow">Chennai public transport &middot; official notices only</p>
+      <h1>Know before you go.</h1>
+      <p class="lead">Route diversions, line blocks and service changes from official sources - with the exact time each notice was last verified and a link back to the agency.</p>
+      <ul class="srcs">
+      {% for s in sources %}<li class="src health-{{ s.health.level }}" title="{{ s.health.text }}">{{ pill(s.health) }}<span>{{ s.row.name }}</span></li>{% else %}<li class="src">No source is set up yet - see Sources.</li>{% endfor %}
+      </ul>
+    </div>
+    <div class="tiles" role="group" aria-label="Summary">
+      <a class="tile t-active" href="{{ url_for('web.index', status='active') }}"><b>{{ counts.active }}</b><span>Active now</span></a>
+      <a class="tile t-sched" href="{{ url_for('web.index', status='scheduled') }}"><b>{{ counts.scheduled }}</b><span>Upcoming</span></a>
+      <a class="tile t-exp" href="{{ url_for('web.index', status='expired') }}"><b>{{ counts.expired }}</b><span>Archived</span></a>
+      <a class="tile t-wd" href="{{ url_for('web.index', status='withdrawn') }}"><b>{{ counts.withdrawn }}</b><span>Withdrawn</span></a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block content %}
+{% for s in sources if s.health.level in ('error','stale') %}
+<div class="alert health-{{ s.health.level }}" role="alert"><strong>{{ s.health.label }} - {{ s.row.name }}.</strong> {{ s.health.text }}</div>
+{% endfor %}
+<div id="update-banner" class="flash ok" role="status" aria-live="polite" hidden>New updates are available. <a href="{{ request.full_path }}">Reload the list</a></div>
+
+<nav class="tabs" aria-label="Advisory status">
+  {% for v,l in [('active','Active now'),('scheduled','Upcoming'),('expired','Archive'),('withdrawn','Withdrawn'),('all','All')] %}
+  {% set args = request.args.to_dict() %}{% set _ = args.update({'status': v}) %}{% set _ = args.pop('page', None) %}
+  <a href="{{ url_for('web.index', **args) }}" {{ 'aria-current=page' if (f.status or 'active')==v }}>{{ l }} <span class="n">{{ counts[v] }}</span></a>
+  {% endfor %}
+</nav>
+
+<details class="filters-wrap" open>
+  <summary>Search &amp; filters</summary>
+  <form class="filters" method="get" action="{{ url_for('web.index') }}" aria-label="Filter advisories">
+    <input type="hidden" name="status" value="{{ f.status or 'active' }}">
+    <div><label for="q">Search</label><input id="q" name="q" value="{{ f.q }}" placeholder="text, train no., route, area"></div>
+    <div><label for="route">Route / train no.</label><input id="route" name="route" value="{{ f.route }}" placeholder="e.g. 43001, EMU"></div>
+    <div><label for="station">Station / stop</label><input id="station" name="station" value="{{ f.station }}" placeholder="e.g. Avadi"></div>
+    <div><label for="area">Area</label><input id="area" name="area" value="{{ f.area }}" placeholder="e.g. Chennai Division"></div>
+    <div><label for="date">Service date</label><input id="date" type="date" name="date" value="{{ f.date }}"></div>
+    <div><label for="type">Change type</label>
+      <select id="type" name="type"><option value="">Any</option>{% for t in types %}<option value="{{ t }}" {{ 'selected' if f.type==t }}>{{ t|pretty }}</option>{% endfor %}</select></div>
+    <div class="actions"><button type="submit">Apply</button> <a class="btn-link" href="{{ url_for('web.index', status=f.status or 'active') }}">Clear</a></div>
+  </form>
+</details>
+
+<div class="layout">
+<section aria-labelledby="list-h">
+  <h2 id="list-h" class="sr">Advisories</h2>
+  <p class="count">{{ total }} advisor{{ 'y' if total==1 else 'ies' }}</p>
+  {% for n in items %}
+  <article class="card status-{{ n.status }} ty-{{ n.type }}">
+    <div class="ico" aria-hidden="true">{{ n.type|icon }}</div>
+    <div class="body">
+      <div class="badges">
+        <span class="badge st-{{ n.status }}">{{ n.status|upper }}</span>
+        <span class="badge type">{{ n.type|pretty }}</span>
+        {% if n.revision_id > 1 %}<span class="badge rev" title="{{ n.change_summary }}">Revised &middot; rev {{ n.revision_id }}</span>{% endif %}
+        {% if n.status in ('active','scheduled') and not n.end_announced %}<span class="badge warn">End time not announced</span>{% endif %}
+      </div>
+      <h3><a href="{{ url_for('web.notice', nid=n.notice_id) }}">{{ n.title }}</a></h3>
+      <p class="routes">{% for r in n.route_id[:10] %}<span class="route">{{ r }}</span>{% endfor %}{% if n.route_id|length > 10 %}<span class="more">+{{ n.route_id|length - 10 }} more</span>{% endif %}
+        {% if n.area %}<span class="area">&#128205; {{ n.area }}</span>{% endif %}</p>
+      <p class="window"><span class="label">Valid</span> {{ n.valid_from|local }} <span aria-hidden="true">&rarr;</span><span class="sr"> to </span> {{ n.valid_to|local if n.valid_to else 'until further notice' }}</p>
+      {% if n.progress is not none %}<div class="bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ n.progress }}" aria-label="Share of the announced window already elapsed"><div class="bar-fill" style="width:{{ n.progress }}%"></div></div>{% endif %}
+      <p class="sum">{{ n.summary }}</p>
+      {% if n.revision_id > 1 %}<p class="change"><span class="label">Latest change</span> {{ n.change_summary }}</p>{% endif %}
+      <div class="prov">
+        <span class="pill health-{{ n.freshness.level }}"><span class="dot" aria-hidden="true"></span>{{ n.freshness.label|upper }}</span>
+        <span>Verified {{ n.last_confirmed_at|local }} ({{ n.freshness.last_verified }})</span>
+        <span class="sep">&middot;</span><span>{{ n.agency }}</span>
+        <a class="out" href="{{ n.source_url }}" rel="noopener" target="_blank">Official source &#8599;</a>
+      </div>
+    </div>
+  </article>
+  {% else %}
+  <div class="empty">
+    <div class="big" aria-hidden="true">&#128652;</div>
+    <h3>Nothing here right now</h3>
+    {% if counts.all == 0 %}<p>No notices have been collected yet. An administrator can press <strong>Refresh</strong> in the <a href="{{ url_for('web.admin') }}">admin page</a>, and sources needing setup are listed on the <a href="{{ url_for('web.sources_page') }}">Sources</a> page.</p>
+    {% else %}<p>No advisories match this view. This is real data: when the agency has no current notice, the list is empty. Check <a href="{{ url_for('web.index', status='expired') }}">the archive</a> for past notices.</p>{% endif %}
+  </div>
+  {% endfor %}
+  {% if pages > 1 %}
+  <nav class="pager" aria-label="Pages">
+    {% set args = request.args.to_dict() %}
+    {% if page > 1 %}{% set _ = args.update({'page': page-1}) %}<a href="{{ url_for('web.index', **args) }}">&larr; Previous</a>{% endif %}
+    <span>Page {{ page }} of {{ pages }}</span>
+    {% if page < pages %}{% set _ = args.update({'page': page+1}) %}<a href="{{ url_for('web.index', **args) }}">Next &rarr;</a>{% endif %}
+  </nav>
+  {% endif %}
+</section>
+
+<aside class="side">
+  <section class="panel" aria-labelledby="chart-h">
+    <h2 id="chart-h">Active by type</h2>
+    {% if chart %}
+    {% set mx = chart|map(attribute='c')|max %}
+    <ul class="hbars" aria-label="Active advisories by type">
+      {% for r in chart %}<li><span class="hb-l">{{ r.type|icon }} {{ r.type|pretty }}</span><span class="hb-t"><span class="hb-f c{{ loop.index0 % 5 }}" style="width:{{ (100 * r.c / mx)|round|int }}%"></span></span><b>{{ r.c }}</b></li>{% endfor %}
+    </ul>
+    {% else %}<p class="small">No active advisories.</p>{% endif %}
+  </section>
+  <section class="panel cta">
+    <h2>Get alerts</h2>
+    <p class="small">One message per new or revised advisory for the routes you choose.</p>
+    <a class="btn" href="{{ url_for('web.subscribe') }}">Subscribe</a>
+  </section>
+</aside>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  var v = {{ version|tojson }}, banner = document.getElementById('update-banner');
+  function poll() { fetch('{{ url_for("web.api_version") }}', {cache: 'no-store'}).then(function (r) { return r.json(); })
+    .then(function (d) { if (d.version !== v) { banner.hidden = false; } }).catch(function () {}); }
+  setInterval(poll, 30000);
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+<title>Demo Metropolitan Transit - Alerts feed</title><link>/demo-source/feed.xml</link>
+<description>Simulated RSS feed</description>
+<item><guid>RSS-2001</guid><title>Route 15 timings revised from tomorrow</title><link>/demo-source/advisories#official</link>
+<category>Timetable change</category>
+<description>Routes: 15, 15A; Area: Anna Nagar; Stations: Anna Nagar West, Thirumangalam; From: {{iso:+1@05:00}}; To: {{iso:+8@23:00}}; First bus now leaves 4:45 AM, frequency every 12 minutes.</description></item>
+<item><guid>RSS-2002</guid><title>Brief signal failure at Chennai Central</title><link>/demo-source/advisories#official</link>
+<category>Service disruption</category>
+<description>Routes: Green Line; Area: Central; From: {{h:-2}}; To: {{h:+2}}; Signal failure causing delays of up to 15 minutes.</description></item>
+</channel></rss>

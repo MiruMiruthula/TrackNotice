@@ -1,0 +1,47 @@
+[
+  {
+    "source_id": "demo-html",
+    "name": "Demo Transit Authority - advisory page (local simulation)",
+    "agency": "Demo Metropolitan Transit Corporation",
+    "kind": "html",
+    "url": "${DEMO_BASE_URL}/demo-source/advisories",
+    "enabled": true,
+    "timezone": "Asia/Kolkata",
+    "min_delay_seconds": 0,
+    "approval": "Local simulation served by this project - no external permission needed",
+    "parser": {
+      "item_class": "advisory",
+      "ref_attr": "data-ref",
+      "fields": {"title": "adv-title", "routes": "adv-routes", "area": "adv-area", "type": "adv-type",
+                 "valid_from": "adv-from", "valid_to": "adv-to", "published": "adv-published",
+                 "summary": "adv-text", "stations": "adv-stations", "status": "adv-status", "link": "adv-link"}
+    }
+  },
+  {
+    "source_id": "demo-rss",
+    "name": "Demo Transit Authority - RSS feed (local simulation)",
+    "agency": "Demo Metropolitan Transit Corporation",
+    "kind": "rss",
+    "url": "${DEMO_BASE_URL}/demo-source/feed.xml",
+    "enabled": true,
+    "timezone": "Asia/Kolkata",
+    "min_delay_seconds": 0,
+    "approval": "Local simulation served by this project - no external permission needed"
+  },
+  {
+    "source_id": "REPLACE-ME-real-source",
+    "name": "REAL OFFICIAL SOURCE - fill in after approval (see docs/SOURCE_APPROVAL.md)",
+    "agency": "Name of the transport authority",
+    "kind": "html",
+    "url": "https://REPLACE-WITH-OFFICIAL-ADVISORY-PAGE.example/notices",
+    "enabled": false,
+    "timezone": "Asia/Kolkata",
+    "min_delay_seconds": 10,
+    "approval": "PENDING - robots.txt / terms review and mentor approval (CP-1) required before enabling",
+    "parser": {
+      "item_class": "CHANGE-TO-ITEM-CSS-CLASS",
+      "ref_attr": "data-ref",
+      "fields": {"title": "CHANGE", "routes": "CHANGE", "valid_from": "CHANGE", "valid_to": "CHANGE", "summary": "CHANGE"}
+    }
+  }
+]

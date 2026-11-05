@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Get alerts{% endblock %}
+{% block content %}
+<h1>Get alerts</h1>
+<p>You receive <strong>one</strong> message for each new or revised advisory that matches your filter. We store only your e-mail address and filter; unsubscribe any time. Leave a filter empty to match everything.</p>
+<form method="post" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div><label for="email">E-mail address</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+  <div><label for="routes">Routes (comma separated)</label><input id="routes" name="routes" placeholder="12B, 21G, Blue Line"></div>
+  <div><label for="areas">Areas (comma separated)</label><input id="areas" name="areas" placeholder="T. Nagar, Guindy"></div>
+  <fieldset><legend>Change types</legend>
+    {% for t in types %}<label class="inline"><input type="checkbox" name="types" value="{{ t }}"> {{ t|pretty }}</label>{% endfor %}
+  </fieldset>
+  <button type="submit">Subscribe</button>
+</form>
+{% if demo_mode %}<p class="small">Demo mode: alerts are written to <code>data/alerts_demo.log</code> instead of being e-mailed.</p>{% endif %}
+{% endblock %}

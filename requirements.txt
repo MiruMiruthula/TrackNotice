@@ -1,0 +1,4 @@
+Flask>=3.0
+tzdata>=2024.1
+gunicorn>=22.0; platform_system != "Windows"
+pypdf>=4.0

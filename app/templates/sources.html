@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_health.html" import pill %}
+{% block title %}Sources &amp; freshness{% endblock %}
+{% block content %}
+<h1>Sources &amp; data freshness</h1>
+<p>TransitNotice checks each official source every <strong>{{ interval }} minutes</strong>. A snapshot is labelled <em>LIVE</em> only when the most recent check succeeded; otherwise it is labelled <em>STALE</em> or <em>SOURCE ERROR</em> and shows the time it was last verified.</p>
+<table class="data">
+  <thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Last attempt</th><th scope="col">Last success</th><th scope="col">Official page</th></tr></thead>
+  <tbody>
+  {% for s in sources %}<tr>
+    <th scope="row">{{ s.row.name }}<br><span class="small">{{ s.row.agency }}</span></th>
+    <td>{{ pill(s.health) }}<br><span class="small">{{ s.health.text }}</span></td>
+    <td>{{ s.row.last_attempt_at|local or 'never' }}</td><td>{{ s.row.last_success_at|local or 'never' }}</td>
+    <td><a href="{{ s.row.url }}" rel="noopener">open</a></td></tr>{% endfor %}
+  </tbody>
+</table>
+{% if pending %}
+<h2>Sources that need setup</h2>
+<div class="panel">
+{% for p in pending %}<p><strong>{{ p.row.name }}</strong><br><span class="small">{{ p.note or 'Not configured.' }}</span></p>{% endfor %}
+<p class="small">Run <code>python manage.py inspect &lt;official page URL&gt;</code> to check robots.txt and see what the page offers, then put the URL in <code>.env</code> and restart.</p>
+</div>
+{% endif %}
+{% if docs %}<p class="small">Official PDF releases already read: {% for k,v in docs.items() %}{{ k }}: {{ v }}{{ ', ' if not loop.last }}{% endfor %}</p>{% endif %}
+{% if problems %}
+<h2>Documents that could not be read or downloaded</h2>
+<table class="data small"><thead><tr><th scope="col">When</th><th scope="col">Document</th><th scope="col">Reason</th></tr></thead>
+<tbody>{% for p in problems %}<tr><td>{{ p.when|local }}</td><td>{{ p.document[-90:] }}</td><td>{{ p.error }}</td></tr>{% endfor %}</tbody></table>
+<p class="small">HTTP 403/404 means the website refused or no longer has the file. The app does not try to get around this; use <a href="{{ url_for('web.admin') }}">Admin &rarr; Import a press release</a> with a PDF you saved from the website.</p>
+{% endif %}
+<h2>Recent refresh runs</h2>
+<table class="data small">
+  <thead><tr><th scope="col">When</th><th scope="col">Source</th><th scope="col">Outcome</th><th scope="col">Found</th><th scope="col">New</th><th scope="col">Revised</th><th scope="col">Withdrawn</th><th scope="col">Rejected</th><th scope="col">ms</th></tr></thead>
+  <tbody>{% for l in logs %}<tr><td>{{ l.finished_at|local }}</td><td>{{ l.source_id }}</td><td>{{ l.outcome }}{% if l.error %}<br>{{ l.error }}{% endif %}</td>
+  <td>{{ l.found }}</td><td>{{ l.new_count }}</td><td>{{ l.revised }}</td><td>{{ l.withdrawn }}</td><td>{{ l.rejected }}</td><td>{{ l.duration_ms }}</td></tr>
+  {% else %}<tr><td colspan="9">No refresh has run yet.</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

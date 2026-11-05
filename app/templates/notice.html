@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "_health.html" import pill %}
+{% block title %}{{ n.title }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('web.index') }}">&larr; All advisories</a></p>
+<article class="panel detail status-{{ n.status }}">
+  <div class="badges">
+    <span class="badge st-{{ n.status }}">{{ n.status|upper }}</span><span class="badge type">{{ n.type|pretty }}</span>
+    {% if not n.end_announced and n.status in ('active','scheduled') %}<span class="badge warn">End time not announced</span>{% endif %}
+  </div>
+  <h1>{{ n.title }}</h1>
+  <p>{{ n.summary }}</p>
+  <dl class="facts">
+    <dt>Notice ID</dt><dd><code>{{ n.notice_id }}</code></dd>
+    <dt>Agency</dt><dd>{{ n.agency }}</dd>
+    <dt>Routes</dt><dd>{% for r in n.route_id %}<span class="route">{{ r }}</span>{% endfor %}</dd>
+    <dt>Area</dt><dd>{{ n.area or '-' }}</dd>
+    <dt>Stations / stops</dt><dd>{{ stations|join(', ') or '-' }}</dd>
+    <dt>Valid from</dt><dd>{{ n.valid_from|local }}</dd>
+    <dt>Valid to</dt><dd>{{ n.valid_to|local if n.valid_to else 'Not announced (open-ended)' }}</dd>
+    <dt>Published by agency</dt><dd>{{ n.published_at|local if n.published_at else 'not stated' }}</dd>
+    <dt>First observed</dt><dd>{{ n.observed_at|local }}</dd>
+    <dt>Last verified</dt><dd>{{ n.last_confirmed_at|local }} ({{ n.freshness.last_verified }})</dd>
+    <dt>Freshness</dt><dd>{{ pill({'level': n.freshness.level, 'label': n.freshness.label|upper}) }} &mdash; {{ health.text }}</dd>
+    <dt>Source page</dt><dd><a href="{{ n.source_url }}" rel="noopener">{{ n.source_url }}</a></dd>
+    <dt>Revision</dt><dd>{{ n.revision_id }} &middot; hash <code>{{ n.content_hash[:12] }}</code></dd>
+    <dt>Alert status</dt><dd>{{ n.alert_status|pretty }}{% if n.alerted_at %} ({{ n.alerted_at|local }}){% endif %}</dd>
+  </dl>
+</article>
+<section class="panel">
+  <h2>Change history</h2>
+  <table class="data">
+    <thead><tr><th scope="col">Rev</th><th scope="col">Observed</th><th scope="col">What changed</th></tr></thead>
+    <tbody>{% for r in revs %}<tr><th scope="row">{{ r.revision_id }}</th><td>{{ r.observed_at|local }}</td><td>{{ r.change_summary }}</td></tr>{% endfor %}</tbody>
+  </table>
+</section>
+{% endblock %}

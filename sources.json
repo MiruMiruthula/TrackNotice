@@ -1,0 +1,74 @@
+[
+  {
+    "source_id": "sr-manual-import",
+    "name": "Southern Railway, Chennai Division - notices you copy from the official website",
+    "agency": "Southern Railway, Chennai Division",
+    "kind": "railway_pdf",
+    "url": "https://sr.indianrailways.gov.in/",
+    "listing": false,
+    "use_inbox": true,
+    "inbox_link": "https://sr.indianrailways.gov.in/",
+    "enabled": true,
+    "timezone": "Asia/Kolkata",
+    "min_delay_seconds": 10,
+    "withdraw_missing": false,
+    "parser": {},
+    "approval": "Human-downloaded public documents: save the PDF from the official site in your browser, then upload it on /admin (Import a press release)."
+  },
+  {
+    "source_id": "sr-chennai-press-archive",
+    "name": "Southern Railway, Chennai Division - published press releases 2023-2025 (official PDFs, downloaded automatically)",
+    "agency": "Southern Railway, Chennai Division",
+    "kind": "railway_pdf",
+    "url": "https://sr.indianrailways.gov.in/cris//uploads/files/1730119879725-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20EMU%20TRAIN%20SERVICES%20ON%2028TH%20&%2029TH%20OCTOBER%202024.pdf",
+    "pdf_urls": [
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1730119879725-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20EMU%20TRAIN%20SERVICES%20ON%2028TH%20&%2029TH%20OCTOBER%202024.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1733395271698-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20EMU%20TRAIN%20SERVICES%20ON%2004TH%20&%2005TH%20DECEMBER%202024.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1741086975872-No.PUB-MAS-2025-03-02.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1741267934421-No.PUB-MAS-2025-03-04.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1749123614187-PRESS%20RELEASE-%20CHANGES%20IN%20PATTERN%20OF%20MEMU%20PASSENGER%20SERVICE%20WITH%20EFFECT%20FROM%205TH%20JUNE%202025.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1720787782287-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20SUBURBAN%20TRAIN%20SERVICES%20ON%2014TH%20JULY%202024.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1720860929303-No.PUB-MAS-2024-07-09.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1732017809300-No.PUB-MAS-2024-11-08.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1722515558989-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20EMU%20TRAIN%20SERVICES%20ON%2003RD%20&%2005TH%20AUGUST%202024.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1738068845087-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20EMU%20TRAIN%20SERVICES%20ON%2028TH%20&%2029TH%20JANUARY%202025.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1730978646011-PRESS%20RELEASE%20-%20CHANGES%20IN%20PATTERN%20OF%20TRAINS%20SERVICES%20FROM%2001ST%20TO%2003RD%20NOVEMBER%202023.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1709452226650-PRESS%20RELEASE-Changes%20in%20Pattern%20of%20EMU%20Train%20services%20in%20Chennai%20Central-%20Gudur%20section.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1730805794690-No.PUB-MAS-2023-12-06.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1728997790977-PRESS%20RELEASE-Restoration%20of%20EMU%20train%20services%20in%20Chennai%20Central%20-Gummidipundi%20Section.pdf",
+      "https://sr.indianrailways.gov.in/cris//uploads/files/1724045904306-PRESS%20RELEASE-%20CHENNAI%20DIVISION%20CELEBRATES%2078TH%20INDEPENDENCE%20DAY%20TODAY-%2015.08.2024.pdf"
+    ],
+    "enabled": false,
+    "timezone": "Asia/Kolkata",
+    "min_delay_seconds": 5,
+    "withdraw_missing": false,
+    "parser": {
+      "link_pattern": "(?!)",
+      "max_documents_per_run": 20
+    },
+    "approval": "DISABLED: the official site answers automated downloads with HTTP 404/403. Use the manual import (copy/paste a notice) instead.",
+    "listing": false
+  },
+  {
+    "source_id": "cmrl-announcements",
+    "name": "Chennai Metro Rail Limited - announcements (needs setup)",
+    "agency": "Chennai Metro Rail Limited (CMRL)",
+    "kind": "html",
+    "url": "${CMRL_URL}",
+    "enabled": true,
+    "timezone": "Asia/Kolkata",
+    "min_delay_seconds": 10,
+    "parser": {
+      "item_class": "SET-AFTER-INSPECT",
+      "ref_attr": "data-ref",
+      "fields": {
+        "title": "SET",
+        "routes": "SET",
+        "valid_from": "SET",
+        "valid_to": "SET",
+        "summary": "SET"
+      }
+    },
+    "approval": "SETUP NEEDED: run 'python manage.py inspect <CMRL announcements page URL>' and copy the suggested class names into this entry; set CMRL_URL in .env"
+  }
+]
